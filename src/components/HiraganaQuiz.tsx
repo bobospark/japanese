@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { speak } from '../utils/tts';
+import { speakJapanese } from '../utils/tts';
 
 interface KanaQuizProps {
   onBack: () => void;
@@ -424,7 +424,7 @@ function KanaChart({ groups }: { groups: KanaGroup[] }) {
               <div
                 key={h.char}
                 className="hiragana-cell"
-                onClick={() => speak(h.char)}
+                onClick={() => speakJapanese(h.char)}
                 title={`${h.char} → ${h.roma}`}
               >
                 <span className="hira-char">{h.char}</span>
@@ -481,7 +481,7 @@ export default function KanaQuiz({ onBack, onRecord }: KanaQuizProps) {
     const isCorrect = val === correctVal;
     if (isCorrect) setScore(s => s + 1);
     onRecord(isCorrect);
-    speak(queue[current].char);
+    speakJapanese(queue[current].char);
   };
 
   const handleNext = () => {
@@ -538,11 +538,11 @@ export default function KanaQuiz({ onBack, onRecord }: KanaQuizProps) {
           <div
             className="question-jp"
             style={{ fontSize: direction === 'roma-to-kana' ? '2rem' : '4rem' }}
-            onClick={() => speak(q.char)}
+            onClick={() => speakJapanese(q.char)}
           >
             {direction === 'kana-to-roma' ? q.char : q.roma}
           </div>
-          <button className="speak-btn" onClick={() => speak(q.char)}>🔊 발음 듣기</button>
+          <button className="speak-btn" onClick={() => speakJapanese(q.char)}>🔊 발음 듣기</button>
           <div className="quiz-counter">{current + 1} / {TOTAL_QUIZ} · 점수: {score}</div>
         </div>
 

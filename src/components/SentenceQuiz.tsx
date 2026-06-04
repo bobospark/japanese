@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
 import { sentences, type Sentence } from '../data/sentences';
-import { speak } from '../utils/tts';
+import { speakJapanese } from '../utils/tts';
 import type { SavedItem } from '../hooks/useStudyState';
 
 interface SentenceQuizProps {
@@ -115,7 +115,7 @@ function SentenceBrowse({
                 <span
                   className="saved-jp"
                   style={{ flex: 1 }}
-                  onClick={() => speak(s.sentence)}
+                  onClick={() => speakJapanese(s.sentence, s.reading)}
                   title="클릭하면 발음을 들을 수 있어요"
                 >
                   {s.sentence}
@@ -197,7 +197,7 @@ export default function SentenceQuiz({ onBack, onRecord, onSave, onRemoveSave, i
     setChecked(true);
     if (correct) setScore(sc => sc + 1);
     onRecord(correct);
-    speak(s.sentence);
+    speakJapanese(s.sentence, s.reading);
   };
 
   const handleNext = () => {
@@ -291,7 +291,7 @@ export default function SentenceQuiz({ onBack, onRecord, onSave, onRemoveSave, i
         <div style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
           뜻: <strong>{s.meaning}</strong>
         </div>
-        <button className="speak-btn" onClick={() => speak(s.sentence)}>🔊 문장 듣기</button>
+        <button className="speak-btn" onClick={() => speakJapanese(s.sentence, s.reading)}>🔊 문장 듣기</button>
         <div className="quiz-counter" style={{ marginTop: '0.75rem' }}>
           {current + 1} / {QUIZ_SIZE} · 점수: {score}
         </div>

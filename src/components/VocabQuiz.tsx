@@ -1,7 +1,8 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { vocabulary, type Word } from '../data/vocabulary';
-import { speak } from '../utils/tts';
+import { speakJapanese } from '../utils/tts';
 import type { SavedItem } from '../hooks/useStudyState';
+import Pagination from './Pagination';
 
 interface VocabQuizProps {
   onBack: () => void;
@@ -16,6 +17,7 @@ type Level = 'beginner' | 'intermediate' | 'all';
 type QuizMode = 'idle' | 'quiz' | 'done';
 
 const QUIZ_SIZE = 20;
+const BROWSE_PAGE_SIZE = 20;
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -38,6 +40,7 @@ function VocabBrowse({
   const [level, setLevel] = useState<Level>('beginner');
   const [search, setSearch] = useState('');
   const [cat, setCat] = useState('all');
+  const [page, setPage] = useState(1);
 
   const categories = useMemo(() => {
     const all = vocabulary.map(v => v.category);
@@ -57,6 +60,17 @@ function VocabBrowse({
     });
   }, [level, cat, search]);
 
+  useEffect(() => {
+    setPage(1);
+  }, [level, cat, search]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / BROWSE_PAGE_SIZE));
+  const safePage = Math.min(page, totalPages);
+  const pageItems = filtered.slice(
+    (safePage - 1) * BROWSE_PAGE_SIZE,
+    safePage * BROWSE_PAGE_SIZE
+  );
+
   const handleSaveToggle = (w: Word) => {
     const sid = `word-${w.id}`;
     if (isSaved(sid)) {
@@ -72,7 +86,7 @@ function VocabBrowse({
         <button className="back-btn" onClick={onBack}>← 뒤로</button>
         <div className="quiz-title">
           <h1>단어 목록</h1>
-          <p>단어를 클릭하면 발음을 들을 수 있어요 · {filtered.length}개</p>
+          <p>단어를 클릭하면 발음을 들을 수 있어요 · {filtered.length}개 · 페이지당 {BROWSE_PAGE_SIZE}개</p>
         </div>
       </div>
 
@@ -110,14 +124,21 @@ function VocabBrowse({
         ))}
       </div>
 
+      <Pagination
+        page={safePage}
+        pageSize={BROWSE_PAGE_SIZE}
+        total={filtered.length}
+        onPageChange={setPage}
+      />
+
       <div className="vocab-list">
-        {filtered.slice(0, 200).map(w => {
+        {pageItems.map(w => {
           const sid = `word-${w.id}`;
           return (
             <div key={w.id} className="vocab-item">
               <span
                 className="jp-word"
-                onClick={() => speak(w.word)}
+                onClick={() => speakJapanese(w.word, w.reading)}
                 title="클릭하면 발음을 들을 수 있어요"
               >
                 {w.word}
@@ -143,6 +164,15 @@ function VocabBrowse({
           </div>
         )}
       </div>
+
+      {filtered.length > 0 && (
+        <Pagination
+          page={safePage}
+          pageSize={BROWSE_PAGE_SIZE}
+          total={filtered.length}
+          onPageChange={setPage}
+        />
+      )}
     </div>
   );
 }
@@ -178,7 +208,7 @@ export default function VocabQuiz({ onBack, onRecord, onSave, onRemoveSave, isSa
     const isCorrect = id === queue[current].id;
     if (isCorrect) setScore(s => s + 1);
     onRecord(isCorrect);
-    speak(queue[current].word);
+    speakJapanese(queue[current].word, queue[current].reading);
   };
 
   const handleNext = () => {
@@ -271,9 +301,9 @@ export default function VocabQuiz({ onBack, onRecord, onSave, onRemoveSave, isSa
       </div>
 
       <div className="quiz-card pop-in">
-        <div className="question-jp" onClick={() => speak(q.word)}>{q.word}</div>
+        <div className="question-jp" onClick={() => speakJapanese(q.word, q.reading)}>{q.word}</div>
         <div className="question-reading">{q.reading}</div>
-        <button className="speak-btn" onClick={() => speak(q.word)}>🔊 발음 듣기</button>
+        <button className="speak-btn" onClick={() => speakJapanese(q.word, q.reading)}>🔊 발음 듣기</button>
         <div className="quiz-counter">{current + 1} / {QUIZ_SIZE} · 점수: {score}</div>
         <div style={{ marginTop: '0.75rem' }}>
           <button

@@ -6,6 +6,7 @@ import HiraganaQuiz from './components/HiraganaQuiz';
 import VocabQuiz from './components/VocabQuiz';
 import SentenceQuiz from './components/SentenceQuiz';
 import SavedPage from './components/SavedPage';
+import VoiceSelect from './components/VoiceSelect';
 
 type Page =
   | 'home'
@@ -72,6 +73,7 @@ export default function App() {
             </button>
           ))}
         </div>
+        <VoiceSelect />
         <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
           저장 {savedItems.length}개
         </div>

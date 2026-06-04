@@ -141,7 +141,8 @@ export default function Dashboard({ history, stats, savedCount, onNavigate }: Da
         <ul style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', display: 'grid', gap: '0.4rem', paddingLeft: '1.25rem' }}>
           <li>가나 차트에서 글자를 클릭하면 발음을 들을 수 있어요 (히라가나·가타카나)</li>
           <li>퀴즈 중 ☆ 버튼으로 어려운 단어/문장을 저장해두세요</li>
-          <li>단어와 문장을 클릭하면 일본어 TTS로 발음을 확인할 수 있어요</li>
+          <li>단어·문장 클릭 시 TTS 발음 (상단 🔊에서 음성 선택, Chrome·Edge 권장)</li>
+          <li>단어 목록은 20개씩 페이지로 넘기며 볼 수 있어요</li>
           <li>매일 꾸준히 연습하면 실력이 빠르게 향상돼요</li>
         </ul>
       </div>

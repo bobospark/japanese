@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { speak } from '../utils/tts';
+import { speakJapanese } from '../utils/tts';
 import type { SavedItem } from '../hooks/useStudyState';
 
 interface SavedPageProps {
@@ -55,7 +55,7 @@ export default function SavedPage({ savedItems, onRemove, onBack }: SavedPagePro
               <div style={{ flex: 1 }}>
                 <div
                   className="saved-jp"
-                  onClick={() => speak(item.japanese)}
+                  onClick={() => speakJapanese(item.japanese, item.reading)}
                   title="클릭하면 발음을 들을 수 있어요"
                 >
                   {item.japanese}
@@ -70,7 +70,7 @@ export default function SavedPage({ savedItems, onRemove, onBack }: SavedPagePro
                 <button
                   className="speak-btn"
                   style={{ fontSize: '0.75rem', padding: '4px 10px' }}
-                  onClick={() => speak(item.japanese)}
+                  onClick={() => speakJapanese(item.japanese, item.reading)}
                 >
                   🔊
                 </button>
