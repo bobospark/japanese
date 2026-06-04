@@ -35,10 +35,12 @@ Cloudflare 웹 로그인만으로 됩니다. `wrangler login`은 **내 PC 터미
 
 | 항목 | 값 |
 |------|-----|
-| Framework preset | **Vite** (또는 None + 아래 수동 설정) |
+| Framework preset | **Vite** (자동으로 command/output 채움) |
 | Build command | `npm run build` |
-| Build output directory | **`dist`** ← 반드시 `dist` (루트 `/` 아님) |
+| Build output directory | **`dist`** |
 | Node version | `22` (Environment variables: `NODE_VERSION=22`) |
+
+> `wrangler.toml`은 쓰지 않습니다. 있으면 대시보드 빌드 설정을 무시하고 `dist`만 찾다가 **빌드 없이 실패**할 수 있습니다.
 
 저장 후 **Retry deployment** 합니다.
 
