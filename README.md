@@ -27,24 +27,30 @@ npx wrangler login   # 브라우저 OAuth — Cloudflare 대시보드 로그인�
 npm run deploy
 ```
 
-### GitHub 연동 (대시보드) — **이 방법이면 `wrangler login` 불필요**
+### 방법 A: GitHub Actions (권장)
 
-Cloudflare 웹 로그인만으로 됩니다. `wrangler login`은 **내 PC 터미널에서 CLI로 올릴 때만** 필요합니다.
+대시보드에 빌드를 넣어도 로그에 `No build command specified` 가 나오면 **Cloudflare에 빌드 설정이 실제로 안 들어간 것**입니다. 이 워크플로가 `npm run build` 후 `dist`를 배포합니다.
 
-**Workers & Pages** → 프로젝트 `japanese-29l` → **Settings** → **Build** 에서:
+1. [API 토큰](https://dash.cloudflare.com/profile/api-tokens) 생성 (Pages/Workers 편집 권한)
+2. [Account ID](https://developers.cloudflare.com/fundamentals/account/find-account-and-zone-ids/) 복사
+3. GitHub **Settings → Secrets → Actions** 에 `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` 추가
+4. `main` 푸시 → Actions 탭에서 Deploy 워크플로 확인
+
+(선택) Cloudflare **Settings → Builds** 에서 자동 Git 배포를 끄면 Actions와 중복 배포를 막을 수 있습니다.
+
+### 방법 B: Cloudflare 대시보드 Git 연동
+
+**Settings → Build configuration** 에서:
 
 | 항목 | 값 |
 |------|-----|
-| Framework preset | **Vite** (자동으로 command/output 채움) |
+| Framework preset | **Vite** |
 | Build command | `npm run build` |
-| Build output directory | **`dist`** |
-| Node version | `22` (Environment variables: `NODE_VERSION=22`) |
+| Build output directory | **`dist`** (루트 `/` 아님) |
 
-> `wrangler.toml`은 쓰지 않습니다. 있으면 대시보드 빌드 설정을 무시하고 `dist`만 찾다가 **빌드 없이 실패**할 수 있습니다.
+로그에 `npm run build` / `vite build` 가 보여야 합니다. `No build command specified` 만 있으면 설정이 비어 있습니다.
 
-저장 후 **Retry deployment** 합니다.
+#### 배포 성공인데 화면이 비어 있을 때
 
-#### 화면이 비어 있을 때 (배포는 됐는데 앱이 안 뜸)
-
-배포된 HTML에 `<script src="/src/main.tsx">` 가 보이면 **빌드 결과가 아닌 소스**가 올라간 것입니다. Build output을 **`dist`** 로 바꾸세요.  
-빌드가 맞으면 `<script src="/assets/index-....js">` 형태입니다.
+- 잘못됨: `<script src="/src/main.tsx">` (소스 31개 파일 그대로 업로드)
+- 정상: `<script src="/assets/index-....js">`
